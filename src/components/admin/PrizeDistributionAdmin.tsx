@@ -35,7 +35,7 @@ const PrizeDistributionAdmin = ({ tournamentId }: PrizeDistributionAdminProps) =
   });
 
   const selectedTournament = tournaments.find(t => t.id === selectedTournamentId);
-  const currentPrizes = selectedTournament?.prizes_content as PrizesContent || { positions: [], additional_rewards: [] };
+  const currentPrizes = (selectedTournament?.prizes_content as PrizesContent) || { positions: [], additional_rewards: [] };
 
   // Initialize empty prizes_content if it doesn't exist
   useEffect(() => {
