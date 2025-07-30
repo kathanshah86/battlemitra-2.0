@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, Users, Trophy, Play, Image, Loader2, Lock } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Users, Trophy, Play, Image, Loader2, Lock, Settings, Megaphone, Wallet, Youtube, Award } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,6 +45,7 @@ const Admin = () => {
     deleteMatch,
   } = useGameStore();
 
+  const [activeTab, setActiveTab] = useState('tournaments');
   const [editingTournament, setEditingTournament] = useState<Tournament | null>(null);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
@@ -443,80 +444,187 @@ const Admin = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 md:mb-4">Admin Panel</h1>
-          <p className="text-gray-400 text-sm md:text-lg px-4">
-            Manage tournaments, players, and matches - Changes reflect immediately on the main website
-          </p>
+      <div className="flex min-h-screen">
+        {/* Sidebar Navigation */}
+        <div className="w-64 bg-gray-900 border-r border-gray-700 p-4">
+          <div className="mb-8">
+            <h1 className="text-xl font-bold text-white mb-2">Admin Panel</h1>
+            <p className="text-gray-400 text-sm">Manage your platform</p>
+          </div>
+
+          <nav className="space-y-2">
+            {/* Tournament Management Section */}
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Tournament Management</h3>
+              <div className="space-y-1">
+                <button
+                  onClick={() => setActiveTab('tournaments')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'tournaments' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Trophy className="w-4 h-4" />
+                  Tournaments
+                </button>
+                <button
+                  onClick={() => setActiveTab('prizes')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'prizes' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Award className="w-4 h-4" />
+                  Prize Distribution
+                </button>
+              </div>
+            </div>
+
+            {/* User Management Section */}
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">User Management</h3>
+              <div className="space-y-1">
+                <button
+                  onClick={() => setActiveTab('players')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'players' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  Players
+                </button>
+                <button
+                  onClick={() => setActiveTab('wallet')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'wallet' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Wallet className="w-4 h-4" />
+                  Wallet Management
+                </button>
+              </div>
+            </div>
+
+            {/* Content Management Section */}
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Content Management</h3>
+              <div className="space-y-1">
+                <button
+                  onClick={() => setActiveTab('matches')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'matches' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Play className="w-4 h-4" />
+                  Matches
+                </button>
+                <button
+                  onClick={() => setActiveTab('live-youtube')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'live-youtube' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Youtube className="w-4 h-4" />
+                  Live Streams
+                </button>
+                <button
+                  onClick={() => setActiveTab('sponsors')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'sponsors' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Image className="w-4 h-4" />
+                  Sponsors
+                </button>
+                <button
+                  onClick={() => setActiveTab('announcements')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'announcements' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Megaphone className="w-4 h-4" />
+                  Announcements
+                </button>
+              </div>
+            </div>
+
+            {/* System Settings Section */}
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">System Settings</h3>
+              <div className="space-y-1">
+                <button
+                  onClick={() => setActiveTab('rooms')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'rooms' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Lock className="w-4 h-4" />
+                  Game Rooms
+                </button>
+              </div>
+            </div>
+          </nav>
         </div>
 
-        <Tabs defaultValue="tournaments" className="space-y-6">
-          <TabsList className="flex flex-wrap w-full bg-gray-800/90 backdrop-blur-sm gap-3 p-4 justify-center rounded-lg border border-gray-700">
-            <TabsTrigger 
-              value="tournaments" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Trophy className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Tournaments</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="players" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Users className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Players</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="matches" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Play className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Matches</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="sponsors" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Image className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Sponsors</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="rooms" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Lock className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Rooms</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="live-youtube" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Play className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Live YouTube</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="prizes" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Trophy className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Prize Admin</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="wallet" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Trophy className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Wallet Admin</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="announcements" 
-              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
-            >
-              <Trophy className="w-4 h-4 flex-shrink-0" />
-              <span className="whitespace-nowrap">Announcements</span>
-            </TabsTrigger>
+        {/* Main Content Area */}
+        <div className="flex-1 bg-gray-950">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* Content Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                {activeTab === 'tournaments' && <Trophy className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'players' && <Users className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'matches' && <Play className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'sponsors' && <Image className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'rooms' && <Lock className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'live-youtube' && <Youtube className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'prizes' && <Award className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'wallet' && <Wallet className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'announcements' && <Megaphone className="w-6 h-6 text-purple-400" />}
+                <h2 className="text-2xl font-bold text-white capitalize">
+                  {activeTab === 'live-youtube' ? 'Live Streams' : activeTab === 'prizes' ? 'Prize Distribution' : activeTab}
+                </h2>
+              </div>
+              <p className="text-gray-400">
+                {activeTab === 'tournaments' && 'Create and manage tournaments. Changes reflect immediately on the main website.'}
+                {activeTab === 'players' && 'Manage player profiles and statistics.'}
+                {activeTab === 'matches' && 'Schedule and manage tournament matches.'}
+                {activeTab === 'sponsors' && 'Manage sponsor logos and information.'}
+                {activeTab === 'rooms' && 'Configure game rooms and access controls.'}
+                {activeTab === 'live-youtube' && 'Manage live stream integrations and YouTube content.'}
+                {activeTab === 'prizes' && 'Configure prize pools and reward distribution.'}
+                {activeTab === 'wallet' && 'Manage user wallets and transactions.'}
+                {activeTab === 'announcements' && 'Create and manage platform announcements.'}
+              </p>
+            </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="hidden">
+            <TabsTrigger value="tournaments" />
+            <TabsTrigger value="players" />
+            <TabsTrigger value="matches" />
+            <TabsTrigger value="sponsors" />
+            <TabsTrigger value="rooms" />
+            <TabsTrigger value="live-youtube" />
+            <TabsTrigger value="prizes" />
+            <TabsTrigger value="wallet" />
+            <TabsTrigger value="announcements" />
           </TabsList>
 
           {/* Tournaments Tab */}
@@ -1290,6 +1398,8 @@ const Admin = () => {
             <AnnouncementsTab />
           </TabsContent>
         </Tabs>
+          </div>
+        </div>
       </div>
     </Layout>
   );
