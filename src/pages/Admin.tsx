@@ -453,55 +453,42 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="tournaments" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-9 bg-gray-800 gap-1 p-1">
-            <TabsTrigger value="tournaments" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Tournaments</span>
-              <span className="sm:hidden">Tourns</span>
+          <TabsList className="flex flex-wrap w-full bg-gray-800 gap-2 p-3 justify-center">
+            <TabsTrigger value="tournaments" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Trophy className="w-4 h-4 mr-2" />
+              Tournaments
             </TabsTrigger>
-            <TabsTrigger value="players" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Players</span>
-              <span className="sm:hidden">Play</span>
+            <TabsTrigger value="players" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Users className="w-4 h-4 mr-2" />
+              Players
             </TabsTrigger>
-            <TabsTrigger value="matches" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Matches</span>
-              <span className="sm:hidden">Match</span>
+            <TabsTrigger value="matches" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Play className="w-4 h-4 mr-2" />
+              Matches
             </TabsTrigger>
-            <TabsTrigger value="sponsors" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Sponsors</span>
-              <span className="sm:hidden">Spons</span>
+            <TabsTrigger value="sponsors" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Trophy className="w-4 h-4 mr-2" />
+              Sponsors
             </TabsTrigger>
-            <TabsTrigger value="rooms" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Rooms</span>
-              <span className="sm:hidden">Room</span>
+            <TabsTrigger value="rooms" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Lock className="w-4 h-4 mr-2" />
+              Rooms
             </TabsTrigger>
-            <TabsTrigger value="live-youtube" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden lg:inline">Live YouTube</span>
-              <span className="lg:hidden hidden sm:inline">Live YT</span>
-              <span className="sm:hidden">Live</span>
+            <TabsTrigger value="live-youtube" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Play className="w-4 h-4 mr-2" />
+              Live YouTube
             </TabsTrigger>
-            <TabsTrigger value="prizes" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden lg:inline">Prize Admin</span>
-              <span className="lg:hidden hidden sm:inline">Prizes</span>
-              <span className="sm:hidden">Prize</span>
+            <TabsTrigger value="prizes" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Trophy className="w-4 h-4 mr-2" />
+              Prize Admin
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden lg:inline">Wallet Admin</span>
-              <span className="lg:hidden hidden sm:inline">Wallet</span>
-              <span className="sm:hidden">Wall</span>
+            <TabsTrigger value="wallet" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Trophy className="w-4 h-4 mr-2" />
+              Wallet Admin
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="data-[state=active]:bg-purple-500 text-xs sm:text-sm p-2 sm:p-3">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden lg:inline">Announcements</span>
-              <span className="lg:hidden hidden sm:inline">Announce</span>
-              <span className="sm:hidden">News</span>
+            <TabsTrigger value="announcements" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
+              <Trophy className="w-4 h-4 mr-2" />
+              Announcements
             </TabsTrigger>
           </TabsList>
 
