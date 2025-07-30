@@ -453,42 +453,69 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="tournaments" className="space-y-6">
-          <TabsList className="flex flex-wrap w-full bg-gray-800 gap-2 p-3 justify-center">
-            <TabsTrigger value="tournaments" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Trophy className="w-4 h-4 mr-2" />
-              Tournaments
+          <TabsList className="flex flex-wrap w-full bg-gray-800/90 backdrop-blur-sm gap-3 p-4 justify-center rounded-lg border border-gray-700">
+            <TabsTrigger 
+              value="tournaments" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Trophy className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Tournaments</span>
             </TabsTrigger>
-            <TabsTrigger value="players" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Users className="w-4 h-4 mr-2" />
-              Players
+            <TabsTrigger 
+              value="players" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Users className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Players</span>
             </TabsTrigger>
-            <TabsTrigger value="matches" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Play className="w-4 h-4 mr-2" />
-              Matches
+            <TabsTrigger 
+              value="matches" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Play className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Matches</span>
             </TabsTrigger>
-            <TabsTrigger value="sponsors" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Trophy className="w-4 h-4 mr-2" />
-              Sponsors
+            <TabsTrigger 
+              value="sponsors" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Image className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Sponsors</span>
             </TabsTrigger>
-            <TabsTrigger value="rooms" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Lock className="w-4 h-4 mr-2" />
-              Rooms
+            <TabsTrigger 
+              value="rooms" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Lock className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Rooms</span>
             </TabsTrigger>
-            <TabsTrigger value="live-youtube" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Play className="w-4 h-4 mr-2" />
-              Live YouTube
+            <TabsTrigger 
+              value="live-youtube" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Play className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Live YouTube</span>
             </TabsTrigger>
-            <TabsTrigger value="prizes" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Trophy className="w-4 h-4 mr-2" />
-              Prize Admin
+            <TabsTrigger 
+              value="prizes" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Trophy className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Prize Admin</span>
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Trophy className="w-4 h-4 mr-2" />
-              Wallet Admin
+            <TabsTrigger 
+              value="wallet" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Trophy className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Wallet Admin</span>
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="data-[state=active]:bg-purple-500 text-sm px-4 py-2 flex-shrink-0">
-              <Trophy className="w-4 h-4 mr-2" />
-              Announcements
+            <TabsTrigger 
+              value="announcements" 
+              className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-200 text-sm px-4 py-3 rounded-md font-medium min-w-fit"
+            >
+              <Trophy className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">Announcements</span>
             </TabsTrigger>
           </TabsList>
 
