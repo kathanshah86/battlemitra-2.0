@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, User, Menu, X, LogOut, Settings, Wallet, MessageSquare, Phone, Mail } from 'lucide-react';
+import { User, Menu, X, LogOut, Settings, Wallet, MessageSquare, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -60,9 +60,6 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
-              <Search className="w-5 h-5" />
-            </Button>
             
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-gray-700 animate-pulse" />
