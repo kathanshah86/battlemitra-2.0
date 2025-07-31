@@ -1,31 +1,37 @@
 
 import { Link } from 'react-router-dom';
-import { Trophy, Users, DollarSign, Gamepad2, ArrowRight, PlayCircle, Clock, Zap, UserCheck, Building, Target } from 'lucide-react';
+import { Trophy, Users, DollarSign, Gamepad2, ArrowRight, PlayCircle, Clock, Zap, UserCheck, Building, Target, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Layout from '@/components/layout/Layout';
 import { useGameStore } from '@/store/gameStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { sponsorService, Sponsor } from '@/services/sponsorService';
+import { liveMatchService, LiveMatchAdmin } from '@/services/liveMatchService';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
-  const { tournaments, players, matches } = useGameStore();
+  const { tournaments, players } = useGameStore();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [liveMatches, setLiveMatches] = useState<LiveMatchAdmin[]>([]);
 
   useEffect(() => {
-    const loadSponsors = async () => {
+    const loadData = async () => {
       try {
-        const sponsorsData = await sponsorService.getSponsors();
+        const [sponsorsData, liveMatchesData] = await Promise.all([
+          sponsorService.getSponsors(),
+          liveMatchService.getActiveLiveMatches()
+        ]);
         setSponsors(sponsorsData);
+        setLiveMatches(liveMatchesData);
       } catch (error) {
-        console.error('Failed to load sponsors:', error);
+        console.error('Failed to load data:', error);
       }
     };
-    loadSponsors();
+    loadData();
   }, []);
 
   const handleRegisterNow = (tournamentId: string) => {
@@ -231,51 +237,71 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {matches.filter(match => match.status === 'live').slice(0, 3).map((match) => (
-              <Card key={match.id} className="bg-gray-800/50 border-gray-700 hover:border-red-500/50 transition-all duration-300">
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-3 md:mb-4">
-                    <span className="text-xs md:text-sm text-gray-400">{match.game}</span>
-                    <div className="flex items-center space-x-1 md:space-x-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-red-400 text-xs md:text-sm font-medium">LIVE</span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center mb-4 md:mb-6">
-                    <h3 className="text-white font-bold text-base md:text-lg mb-1 md:mb-2">Apex Legends Showdown</h3>
-                    <div className="text-xs md:text-sm text-gray-400">{new Date(match.start_time).toLocaleTimeString()}</div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mb-4 md:mb-6">
-                    <div className="text-center flex-1">
-                      <div className="w-8 md:w-12 h-8 md:h-12 bg-blue-500/20 rounded border border-blue-500/30 flex items-center justify-center mb-1 md:mb-2 mx-auto">
-                        <UserCheck className="w-4 md:w-6 h-4 md:h-6 text-blue-400" />
+            {liveMatches.length > 0 ? (
+              liveMatches.slice(0, 3).map((liveMatch) => (
+                <Card key={liveMatch.id} className="bg-gray-800/50 border-gray-700 hover:border-red-500/50 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between mb-3 md:mb-4">
+                      <span className="text-xs md:text-sm text-gray-400">Live Match</span>
+                      <div className="flex items-center space-x-1 md:space-x-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        <span className="text-red-400 text-xs md:text-sm font-medium">LIVE</span>
                       </div>
-                      <div className="text-white font-medium text-xs md:text-sm truncate">{match.player1}</div>
                     </div>
                     
-                    <div className="text-center px-2 md:px-4">
-                      <div className="text-lg md:text-2xl font-bold text-white mb-1">
-                        {match.player1_score} : {match.player2_score}
+                    {liveMatch.banner_url && (
+                      <div className="relative aspect-video overflow-hidden rounded-lg mb-4">
+                        <img 
+                          src={liveMatch.banner_url} 
+                          alt={liveMatch.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="text-xs md:text-sm text-purple-400">battle-royale</div>
+                    )}
+                    
+                    <div className="text-center mb-4 md:mb-6">
+                      <h3 className="text-white font-bold text-base md:text-lg mb-1 md:mb-2">{liveMatch.title}</h3>
+                      {liveMatch.description && (
+                        <div className="text-xs md:text-sm text-gray-400 line-clamp-2">{liveMatch.description}</div>
+                      )}
                     </div>
                     
-                    <div className="text-center flex-1">
-                      <div className="w-8 md:w-12 h-8 md:h-12 bg-blue-500/20 rounded border border-blue-500/30 flex items-center justify-center mb-1 md:mb-2 mx-auto">
-                        <UserCheck className="w-4 md:w-6 h-4 md:h-6 text-blue-400" />
-                      </div>
-                      <div className="text-white font-medium text-xs md:text-sm truncate">{match.player2}</div>
-                    </div>
-                  </div>
-                  
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-sm md:text-base py-2 md:py-3">
-                    Watch Stream
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    {liveMatch.youtube_live_url ? (
+                      <Button 
+                        asChild
+                        className="w-full bg-red-500 hover:bg-red-600 text-sm md:text-base py-2 md:py-3"
+                      >
+                        <a 
+                          href={liveMatch.youtube_live_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center"
+                        >
+                          <PlayCircle className="w-4 h-4 mr-2" />
+                          Watch Live Stream
+                          <ExternalLink className="w-4 h-4 ml-2" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button 
+                        asChild
+                        className="w-full bg-purple-500 hover:bg-purple-600 text-sm md:text-base py-2 md:py-3"
+                      >
+                        <Link to="/live-matches">
+                          View Details
+                        </Link>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <PlayCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-400 mb-2">No Live Matches</h3>
+                <p className="text-gray-500">Check back later for live tournament streams!</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
