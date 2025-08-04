@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, Users, Trophy, Play, Image, Loader2, Lock, Settings, Megaphone, Wallet, Youtube, Award } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Users, Trophy, Play, Image, Loader2, Lock, Settings, Megaphone, Wallet, Youtube, Award, QrCode } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,7 @@ import WalletAdmin from '@/components/admin/WalletAdmin';
 import LiveMatchYouTubeAdmin from '@/components/admin/LiveMatchYouTubeAdmin';
 import PrizeDistributionAdmin from '@/components/admin/PrizeDistributionAdmin';
 import AnnouncementsTab from '@/components/admin/AnnouncementsTab';
+import { QRCodeTab } from '@/components/admin/QRCodeTab';
 
 const Admin = () => {
   const { toast } = useToast();
@@ -559,6 +560,17 @@ const Admin = () => {
                   <Megaphone className="w-4 h-4" />
                   Announcements
                 </button>
+                <button
+                  onClick={() => setActiveTab('qrcodes')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeTab === 'qrcodes' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <QrCode className="w-4 h-4" />
+                  QR Codes
+                </button>
               </div>
             </div>
 
@@ -597,6 +609,7 @@ const Admin = () => {
                 {activeTab === 'prizes' && <Award className="w-6 h-6 text-purple-400" />}
                 {activeTab === 'wallet' && <Wallet className="w-6 h-6 text-purple-400" />}
                 {activeTab === 'announcements' && <Megaphone className="w-6 h-6 text-purple-400" />}
+                {activeTab === 'qrcodes' && <QrCode className="w-6 h-6 text-purple-400" />}
                 <h2 className="text-2xl font-bold text-white capitalize">
                   {activeTab === 'live-youtube' ? 'Live Streams' : activeTab === 'prizes' ? 'Prize Distribution' : activeTab}
                 </h2>
@@ -611,6 +624,7 @@ const Admin = () => {
                 {activeTab === 'prizes' && 'Configure prize pools and reward distribution.'}
                 {activeTab === 'wallet' && 'Manage user wallets and transactions.'}
                 {activeTab === 'announcements' && 'Create and manage platform announcements.'}
+                {activeTab === 'qrcodes' && 'Manage payment QR codes displayed on the website.'}
               </p>
             </div>
 
@@ -625,6 +639,7 @@ const Admin = () => {
             <TabsTrigger value="prizes" />
             <TabsTrigger value="wallet" />
             <TabsTrigger value="announcements" />
+            <TabsTrigger value="qrcodes" />
           </TabsList>
 
           {/* Tournaments Tab */}
@@ -1396,6 +1411,11 @@ const Admin = () => {
           {/* Announcements Tab */}
           <TabsContent value="announcements">
             <AnnouncementsTab />
+          </TabsContent>
+
+          {/* QR Codes Tab */}
+          <TabsContent value="qrcodes">
+            <QRCodeTab />
           </TabsContent>
         </Tabs>
           </div>

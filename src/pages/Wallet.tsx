@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Minus, DollarSign, TrendingUp, TrendingDown, Clock, CheckCircle, XCircle, QrCode, Phone, CreditCard, User } from 'lucide-react';
+import { Plus, Minus, DollarSign, TrendingUp, TrendingDown, Clock, CheckCircle, XCircle, QrCode, Phone, CreditCard, User, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import Layout from '@/components/layout/Layout';
 import { walletService, WalletBalance, WalletTransaction } from '@/services/walletService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { qrCodeService, QRCode } from '@/services/qrCodeService';
 
 const Wallet = () => {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ const Wallet = () => {
   const [balance, setBalance] = useState<WalletBalance | null>(null);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeQRCode, setActiveQRCode] = useState<QRCode | null>(null);
   
   // Add Money State
   const [showAddMoney, setShowAddMoney] = useState(false);
@@ -41,7 +43,17 @@ const Wallet = () => {
     if (user) {
       loadWalletData();
     }
+    loadActiveQRCode();
   }, [user]);
+
+  const loadActiveQRCode = async () => {
+    try {
+      const qrCode = await qrCodeService.getActiveQRCode();
+      setActiveQRCode(qrCode);
+    } catch (error) {
+      console.error('Failed to load active QR code:', error);
+    }
+  };
 
   const loadWalletData = async () => {
     if (!user) return;
@@ -178,6 +190,53 @@ const Wallet = () => {
       toast({
         title: "Error",
         description: "Failed to submit withdrawal request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadQRCode = async () => {
+    if (!activeQRCode) {
+      toast({
+        title: "No QR Code",
+        description: "No QR code available for download.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // For data URL images (base64), we can download directly
+      if (activeQRCode.image_url.startsWith('data:')) {
+        const link = document.createElement('a');
+        link.href = activeQRCode.image_url;
+        link.download = `${activeQRCode.name.replace(/\s+/g, '_')}_QR_Code.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // For external URLs, fetch and download
+        const response = await fetch(activeQRCode.image_url);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${activeQRCode.name.replace(/\s+/g, '_')}_QR_Code.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+      
+      toast({
+        title: "Success",
+        description: "QR code downloaded successfully.",
+      });
+    } catch (error) {
+      console.error('Failed to download QR code:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download QR code. Please try again.",
         variant: "destructive",
       });
     }
@@ -478,9 +537,31 @@ const Wallet = () => {
                   Amount: <span className="text-green-400">₹{addAmount}</span>
                 </div>
                 <div className="bg-white p-6 rounded-xl inline-block shadow-xl border-4 border-purple-500/20">
-                  <QrCode className="w-32 h-32 mx-auto text-black" />
+                  {activeQRCode ? (
+                    <img 
+                      src={activeQRCode.image_url} 
+                      alt={activeQRCode.name}
+                      className="w-32 h-32 object-contain"
+                    />
+                  ) : (
+                    <QrCode className="w-32 h-32 mx-auto text-black" />
+                  )}
                 </div>
-                <p className="text-gray-300 text-sm mt-3 font-medium">Scan this QR code with Google Pay</p>
+                <div className="flex items-center justify-center gap-3 mt-3">
+                  <p className="text-gray-300 text-sm font-medium">
+                    {activeQRCode ? `Scan this QR code - ${activeQRCode.name}` : 'Scan this QR code with Google Pay'}
+                  </p>
+                  {activeQRCode && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={downloadQRCode}
+                      className="border-blue-600 text-blue-400 hover:bg-blue-600/20 h-6 px-2"
+                    >
+                      <Download className="w-3 h-3" />
+                    </Button>
+                  )}
+                </div>
               </div>
               
               {/* Enhanced Payment Details Form */}
