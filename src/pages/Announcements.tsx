@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Megaphone, Calendar, AlertTriangle, Info, AlertCircle, Zap } from 'lucide-react';
+import { Megaphone, Calendar, AlertTriangle, Info, AlertCircle, Zap, Sparkles, Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 
@@ -57,16 +57,16 @@ const Announcements: React.FC = () => {
 
   const getPriorityBadge = (priority: string) => {
     const styles = {
-      urgent: 'bg-red-500/20 text-red-400 border-red-500/50',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/50',
-      normal: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
-      low: 'bg-gray-500/20 text-gray-400 border-gray-500/50'
+      urgent: 'announcement-badge-urgent',
+      high: 'announcement-badge-high',
+      normal: 'announcement-badge-normal',
+      low: 'announcement-badge-low'
     };
 
     return (
       <Badge 
         variant="outline" 
-        className={`${styles[priority as keyof typeof styles]} uppercase text-xs font-semibold`}
+        className={`${styles[priority as keyof typeof styles]} uppercase text-xs font-semibold animate-fade-in`}
       >
         {priority}
       </Badge>
@@ -90,25 +90,42 @@ const Announcements: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-blue-900/30 p-6">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <div className="text-center space-y-4">
-              <div className="flex items-center justify-center gap-3">
-                <Megaphone className="w-8 h-8 text-purple-400" />
-                <h1 className="text-4xl font-bold text-white">Announcements</h1>
+        <div className="min-h-screen bg-gradient-to-br from-background via-background/90 to-background p-6">
+          <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+            <div className="text-center space-y-6">
+              <div className="flex items-center justify-center gap-3 relative">
+                <div className="relative">
+                  <Megaphone className="w-8 h-8 text-primary" />
+                  <Sparkles className="w-4 h-4 text-primary absolute -top-1 -right-1 animate-pulse" />
+                </div>
+                <h1 className="text-4xl font-bold announcement-header-gradient">Announcements</h1>
               </div>
-              <p className="text-gray-300 text-lg">Loading latest updates...</p>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Loading the latest updates and important information...
+              </p>
+              <div className="relative mx-auto w-16 h-16">
+                <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="bg-gray-800/50 border-gray-700 animate-pulse">
+                <Card key={i} className="announcement-card animate-pulse">
                   <CardHeader className="pb-3">
-                    <div className="h-6 bg-gray-700 rounded w-3/4"></div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 bg-muted rounded"></div>
+                      <div className="h-6 bg-muted rounded flex-1 max-w-md"></div>
+                      <div className="h-6 bg-muted rounded w-16"></div>
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-700 rounded w-full"></div>
-                      <div className="h-4 bg-gray-700 rounded w-2/3"></div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-muted rounded w-full"></div>
+                      <div className="h-4 bg-muted rounded w-4/5"></div>
+                      <div className="h-4 bg-muted rounded w-3/5"></div>
+                      <div className="pt-3 border-t border-border/50">
+                        <div className="h-3 bg-muted rounded w-48"></div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -122,76 +139,100 @@ const Announcements: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-blue-900/30 p-6">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/90 to-background p-6">
+        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+          {/* Enhanced Header */}
+          <div className="text-center space-y-6">
+            <div className="flex items-center justify-center gap-3 relative">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/20 blur-lg animate-pulse"></div>
+                <div className="relative bg-gradient-to-r from-primary to-blue-500 p-4 rounded-full">
+                  <Megaphone className="w-8 h-8 text-white" />
+                </div>
+                <Bell className="w-4 h-4 text-primary absolute -top-1 -right-1 animate-bounce" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold announcement-header-gradient">
                 Announcements
               </h1>
             </div>
-            <p className="text-gray-300 text-sm md:text-lg max-w-2xl mx-auto px-4">
-              Stay updated with the latest news, tournament updates, and important information from our esports platform.
-            </p>
+            <div className="max-w-3xl mx-auto space-y-4">
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Stay updated with the latest news, tournament updates, and important information from our esports platform.
+              </p>
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span>Live updates • Real-time notifications</span>
+              </div>
+            </div>
           </div>
 
-          {/* Announcements List */}
-          <div className="space-y-4 sm:space-y-6">
+          {/* Enhanced Announcements List */}
+          <div className="space-y-6">
             {sortedAnnouncements.length === 0 ? (
-              <Card className="bg-gray-800/50 border-gray-700 text-center p-8 sm:p-12">
-                <div className="space-y-4">
-                  <Megaphone className="w-12 h-12 sm:w-16 sm:h-16 text-gray-500 mx-auto" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">No Announcements Yet</h3>
-                    <p className="text-gray-400 text-sm sm:text-base">
-                      Check back later for the latest updates and tournament news!
+              <Card className="announcement-card text-center p-12 animate-scale-in">
+                <div className="space-y-6">
+                  <div className="relative mx-auto w-20 h-20">
+                    <div className="absolute inset-0 rounded-full bg-primary/10 animate-pulse"></div>
+                    <div className="relative bg-gradient-to-r from-primary/20 to-blue-500/20 p-6 rounded-full border border-primary/20">
+                      <Megaphone className="w-8 h-8 text-primary mx-auto" />
+                    </div>
+                    <Sparkles className="w-5 h-5 text-primary absolute -top-1 -right-1 animate-bounce" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold text-foreground">No Announcements Yet</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
+                      Check back soon for the latest updates, tournament news, and important platform announcements!
                     </p>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    <span>We'll keep you informed</span>
                   </div>
                 </div>
               </Card>
             ) : (
-              sortedAnnouncements.map((announcement) => (
+              sortedAnnouncements.map((announcement, index) => (
                 <Card 
                   key={announcement.id} 
-                  className={`bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all duration-300 ${
-                    announcement.priority === 'urgent' 
-                      ? 'border-red-500/50 shadow-lg shadow-red-500/20' 
-                      : announcement.priority === 'high'
-                      ? 'border-orange-500/50 shadow-lg shadow-orange-500/20'
-                      : ''
-                  }`}
+                  className={`announcement-card announcement-card-${announcement.priority} group animate-fade-in`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
                 >
-                  <CardHeader className="pb-3 p-4 sm:p-6">
-                    <div className="flex items-start justify-between gap-3 sm:gap-4">
-                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        {getPriorityIcon(announcement.priority)}
-                        <CardTitle className="text-white text-lg sm:text-xl leading-tight">
-                          {announcement.title}
-                        </CardTitle>
+                  <CardHeader className="pb-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <div className="flex-shrink-0 mt-1">
+                          {getPriorityIcon(announcement.priority)}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-foreground text-xl leading-tight font-bold group-hover:text-primary transition-colors">
+                            {announcement.title}
+                          </CardTitle>
+                        </div>
                       </div>
                       <div className="flex-shrink-0">
                         {getPriorityBadge(announcement.priority)}
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
-                    <div className="text-gray-300 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+                  <CardContent className="space-y-4">
+                    <div className="text-foreground/90 leading-relaxed whitespace-pre-wrap">
                       {announcement.content}
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-400 pt-2 border-t border-gray-700">
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground pt-4 border-t border-border/50">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-primary" />
                         <span>
-                          Published on {format(new Date(announcement.created_at), 'MMM dd, yyyy')}
+                          Published {format(new Date(announcement.created_at), 'MMM dd, yyyy')}
                           <span className="hidden sm:inline"> at {format(new Date(announcement.created_at), 'HH:mm')}</span>
                         </span>
                       </div>
                       {announcement.updated_at !== announcement.created_at && (
-                        <span className="text-gray-500 text-xs">
-                          • Updated {format(new Date(announcement.updated_at), 'MMM dd, yyyy')}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="w-1 h-1 bg-muted-foreground rounded-full hidden sm:block"></span>
+                          <span className="text-muted-foreground/80">
+                            Updated {format(new Date(announcement.updated_at), 'MMM dd, yyyy')}
+                          </span>
+                        </div>
                       )}
                     </div>
                   </CardContent>
@@ -200,11 +241,26 @@ const Announcements: React.FC = () => {
             )}
           </div>
 
-          {/* Footer */}
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-sm">
+          {/* Enhanced Footer */}
+          <div className="text-center py-12 space-y-4">
+            <div className="flex items-center justify-center gap-2 text-primary">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+              <span className="w-1 h-1 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
+            </div>
+            <p className="text-muted-foreground">
               Stay connected for the latest esports tournament updates and platform news.
             </p>
+            <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Bell className="w-3 h-3" />
+                Real-time updates
+              </span>
+              <span className="flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Important announcements
+              </span>
+            </div>
           </div>
         </div>
       </div>

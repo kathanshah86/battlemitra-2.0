@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit2, Trash2, Megaphone, AlertTriangle, Info, AlertCircle, Zap } from 'lucide-react';
+import { Plus, Edit2, Trash2, Megaphone, AlertTriangle, Info, AlertCircle, Zap, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -199,16 +199,16 @@ const AnnouncementsTab: React.FC = () => {
 
   const getPriorityBadge = (priority: string) => {
     const styles = {
-      urgent: 'bg-red-500/20 text-red-400 border-red-500/50',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/50',
-      normal: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
-      low: 'bg-gray-500/20 text-gray-400 border-gray-500/50'
+      urgent: 'announcement-badge-urgent',
+      high: 'announcement-badge-high',
+      normal: 'announcement-badge-normal',
+      low: 'announcement-badge-low'
     };
 
     return (
       <Badge 
         variant="outline" 
-        className={`${styles[priority as keyof typeof styles]} uppercase text-xs`}
+        className={`${styles[priority as keyof typeof styles]} uppercase text-xs font-semibold animate-fade-in`}
       >
         {priority}
       </Badge>
@@ -217,28 +217,41 @@ const AnnouncementsTab: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 animate-fade-in">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-white">Manage Announcements</h2>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Megaphone className="w-6 h-6 text-primary" />
+              <Sparkles className="w-3 h-3 text-primary absolute -top-1 -right-1 animate-pulse" />
+            </div>
+            <h2 className="text-2xl font-bold announcement-header-gradient">Manage Announcements</h2>
+          </div>
         </div>
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
-          <p className="text-gray-400 mt-2">Loading announcements...</p>
+        <div className="text-center py-12">
+          <div className="relative mx-auto w-16 h-16 mb-4">
+            <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-muted-foreground">Loading announcements...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Megaphone className="w-6 h-6 text-purple-400" />
-          <h2 className="text-2xl font-bold text-white">Manage Announcements</h2>
+          <div className="relative">
+            <Megaphone className="w-6 h-6 text-primary" />
+            <Sparkles className="w-3 h-3 text-primary absolute -top-1 -right-1 animate-pulse" />
+          </div>
+          <h2 className="text-2xl font-bold announcement-header-gradient">Manage Announcements</h2>
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="bg-purple-600 hover:bg-purple-700"
+          className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          style={{ boxShadow: 'var(--glow-primary)' }}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Announcement
@@ -246,74 +259,90 @@ const AnnouncementsTab: React.FC = () => {
       </div>
 
       {showForm && (
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="announcement-form animate-scale-in pulse-border">
           <CardHeader>
-            <CardTitle className="text-white">
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
               {editingId ? 'Edit Announcement' : 'Create New Announcement'}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="title" className="text-white">Title *</Label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-foreground font-medium">Title *</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Enter announcement title"
-                  className="bg-gray-900 border-gray-600 text-white"
+                  placeholder="Enter announcement title..."
+                  className="bg-background/50 border-border/50 focus:border-primary/50 transition-colors"
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="content" className="text-white">Content *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="content" className="text-foreground font-medium">Content *</Label>
                 <Textarea
                   id="content"
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Enter announcement content"
-                  className="bg-gray-900 border-gray-600 text-white min-h-[120px]"
+                  placeholder="Enter announcement content..."
+                  className="bg-background/50 border-border/50 focus:border-primary/50 transition-colors min-h-[120px] resize-none"
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="priority" className="text-white">Priority</Label>
+              <div className="space-y-2">
+                <Label htmlFor="priority" className="text-foreground font-medium">Priority</Label>
                 <Select
                   value={formData.priority}
                   onValueChange={(value: 'low' | 'normal' | 'high' | 'urgent') => 
                     setFormData({ ...formData, priority: value })
                   }
                 >
-                  <SelectTrigger className="bg-gray-900 border-gray-600 text-white">
+                  <SelectTrigger className="bg-background/50 border-border/50 focus:border-primary/50">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="low" className="text-white">Low</SelectItem>
-                    <SelectItem value="normal" className="text-white">Normal</SelectItem>
-                    <SelectItem value="high" className="text-white">High</SelectItem>
-                    <SelectItem value="urgent" className="text-white">Urgent</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="low">🟢 Low Priority</SelectItem>
+                    <SelectItem value="normal">🔵 Normal Priority</SelectItem>
+                    <SelectItem value="high">🟠 High Priority</SelectItem>
+                    <SelectItem value="urgent">🔴 Urgent Priority</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-background/30 border border-border/50">
+                <div className="space-y-1">
+                  <Label htmlFor="is_active" className="text-foreground font-medium cursor-pointer">
+                    Active Status
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {formData.is_active ? 'Visible to all users' : 'Hidden from users'}
+                  </p>
+                </div>
                 <Switch
                   id="is_active"
                   checked={formData.is_active}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                 />
-                <Label htmlFor="is_active" className="text-white">
-                  Active (visible to users)
-                </Label>
               </div>
 
-              <div className="flex gap-3">
-                <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  type="submit" 
+                  className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 flex-1"
+                  style={{ boxShadow: 'var(--glow-primary)' }}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
                   {editingId ? 'Update' : 'Create'} Announcement
                 </Button>
-                <Button type="button" variant="outline" onClick={resetForm}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={resetForm}
+                  className="border-border/50 hover:bg-background/50"
+                >
                   Cancel
                 </Button>
               </div>
@@ -324,32 +353,48 @@ const AnnouncementsTab: React.FC = () => {
 
       <div className="space-y-4">
         {announcements.length === 0 ? (
-          <Card className="bg-gray-800 border-gray-700 text-center p-8">
-            <Megaphone className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No Announcements</h3>
-            <p className="text-gray-400">Create your first announcement to get started.</p>
+          <Card className="announcement-card text-center p-12 animate-fade-in">
+            <div className="space-y-4">
+              <div className="relative mx-auto w-16 h-16 mb-6">
+                <Megaphone className="w-16 h-16 text-muted-foreground mx-auto" />
+                <Sparkles className="w-6 h-6 text-primary absolute -top-2 -right-2 animate-bounce" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">No Announcements Yet</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Create your first announcement to start engaging with your community and sharing important updates.
+              </p>
+            </div>
           </Card>
         ) : (
-          announcements.map((announcement) => (
-            <Card key={announcement.id} className="bg-gray-800 border-gray-700">
+          announcements.map((announcement, index) => (
+            <Card 
+              key={announcement.id} 
+              className={`announcement-card announcement-card-${announcement.priority} animate-fade-in`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {getPriorityIcon(announcement.priority)}
-                    <CardTitle className="text-white text-lg leading-tight">
+                    <div className="flex-shrink-0">
+                      {getPriorityIcon(announcement.priority)}
+                    </div>
+                    <CardTitle className="text-foreground text-lg leading-tight font-semibold">
                       {announcement.title}
                     </CardTitle>
                     {getPriorityBadge(announcement.priority)}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={announcement.is_active ? "default" : "secondary"}>
-                      {announcement.is_active ? 'Active' : 'Inactive'}
+                    <Badge 
+                      variant={announcement.is_active ? "default" : "secondary"}
+                      className={announcement.is_active ? "bg-green-500/20 text-green-300 border-green-500/50" : ""}
+                    >
+                      {announcement.is_active ? '🟢 Active' : '⭕ Inactive'}
                     </Badge>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleEdit(announcement)}
-                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10"
+                      className="text-primary border-primary/50 hover:bg-primary/10 transition-all duration-200 hover:scale-105"
                     >
                       <Edit2 className="w-4 h-4" />
                     </Button>
@@ -357,7 +402,7 @@ const AnnouncementsTab: React.FC = () => {
                       size="sm"
                       variant="outline"
                       onClick={() => handleDelete(announcement.id)}
-                      className="text-red-400 border-red-400 hover:bg-red-400/10"
+                      className="text-destructive border-destructive/50 hover:bg-destructive/10 transition-all duration-200 hover:scale-105"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -365,14 +410,18 @@ const AnnouncementsTab: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <p className="text-gray-300 whitespace-pre-wrap">
+                <div className="space-y-4">
+                  <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
                     {announcement.content}
                   </p>
-                  <div className="text-sm text-gray-400 pt-2 border-t border-gray-700">
-                    Created: {format(new Date(announcement.created_at), 'MMM dd, yyyy HH:mm')}
+                  <div className="text-sm text-muted-foreground pt-3 border-t border-border/50 flex flex-wrap gap-4">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-primary rounded-full"></span>
+                      Created: {format(new Date(announcement.created_at), 'MMM dd, yyyy HH:mm')}
+                    </span>
                     {announcement.updated_at !== announcement.created_at && (
-                      <span className="ml-4">
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 bg-muted-foreground rounded-full"></span>
                         Updated: {format(new Date(announcement.updated_at), 'MMM dd, yyyy HH:mm')}
                       </span>
                     )}
