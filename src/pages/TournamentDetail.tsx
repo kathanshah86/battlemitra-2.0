@@ -41,57 +41,54 @@ const TournamentDetail = () => {
     <Layout>
       <div className="min-h-screen">
         {/* Hero Section */}
-        <div className="tournament-hero relative h-[350px] sm:h-[450px] lg:h-[600px] overflow-hidden">
+        <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] overflow-hidden">
           {tournament.banner ? (
             <img 
               src={tournament.banner} 
               alt={tournament.name}
-              className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-1000"
+              className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
             />
           ) : (
-            <div className="w-full h-full tournament-hero"></div>
+            <div className="w-full h-full bg-gradient-to-br from-purple-900/50 to-blue-900/50"></div>
           )}
+          <div className="absolute inset-0 bg-black/50"></div>
           
-          {/* Animated floating elements */}
-          <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-full opacity-20 floating-animation"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-to-br from-pink-400 to-blue-600 rounded-full opacity-15 floating-animation" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-32 left-1/4 w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-25 floating-animation" style={{animationDelay: '4s'}}></div>
-          
-          <div className="absolute inset-0 flex flex-col justify-between z-10">
-            <div className="p-4 sm:p-6 lg:p-8 animate-slide-up">
+          <div className="absolute inset-0 flex flex-col justify-between">
+            <div className="p-4 sm:p-6 lg:p-8">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate('/tournaments')}
-                className="tournament-card-modern text-white hover:bg-white/30 transform hover:scale-110 transition-all duration-300 backdrop-blur-md border border-white/20 glow-pulse"
+                className="text-white hover:bg-white/20 transform hover:scale-105 transition-transform duration-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Tournaments
               </Button>
             </div>
             
-            <div className="p-4 sm:p-6 lg:p-8 animate-scale-in" style={{animationDelay: '0.3s'}}>
-              <div className="flex flex-wrap gap-3 mb-6">
-                <Badge className="tournament-card-modern px-4 py-2 text-sm font-bold backdrop-blur-lg border border-purple-400/30">
-                  🎮 {tournament.game || 'Battle Royale'}
+            <div className="p-4 sm:p-6 lg:p-8">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="secondary" className="bg-purple-500 text-white">
+                  {tournament.game || 'battle-royale'}
                 </Badge>
                 <Badge 
-                  className={`px-4 py-2 text-sm font-bold backdrop-blur-lg border-2 glow-pulse ${
-                    tournament.status === 'upcoming' ? 'border-blue-400/50 bg-blue-500/20 text-blue-200' :
-                    tournament.status === 'ongoing' ? 'border-green-400/50 bg-green-500/20 text-green-200' :
-                    'border-gray-400/50 bg-gray-500/20 text-gray-200'
+                  variant="secondary" 
+                  className={`${
+                    tournament.status === 'upcoming' ? 'bg-blue-500 text-white' :
+                    tournament.status === 'ongoing' ? 'bg-green-500 text-white' :
+                    'bg-gray-500 text-white'
                   }`}
                 >
-                  🔥 {tournament.status.toUpperCase()}
+                  {tournament.status.toUpperCase()}
                 </Badge>
                 {tournament.entry_fee && (
-                  <Badge className="tournament-card-modern border-emerald-400/50 bg-emerald-500/20 text-emerald-200 px-4 py-2 text-sm font-bold">
-                    💰 Entry: {tournament.entry_fee}
+                  <Badge variant="secondary" className="bg-green-500 text-white">
+                    Entry: {tournament.entry_fee}
                   </Badge>
                 )}
               </div>
               
-              <h1 className="tournament-neon-text text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
                 {tournament.name}
               </h1>
               
@@ -121,98 +118,101 @@ const TournamentDetail = () => {
           </div>
           
           {/* Prize Pool Card */}
-          <div className="absolute top-6 right-6 z-20 animate-float">
-            <div className="tournament-card-cyber p-6 text-center backdrop-blur-xl border-2 border-transparent bg-gradient-to-br from-yellow-400/20 to-orange-500/20 glow-pulse">
-              <div className="flex items-center justify-center mb-3">
-                <Trophy className="w-6 h-6 text-yellow-400 mr-2" />
-                <p className="text-yellow-200 text-sm font-bold uppercase tracking-wider">Prize Pool</p>
-              </div>
-              <p className="tournament-text-gradient text-2xl sm:text-3xl lg:text-4xl font-black">{tournament.prize_pool}</p>
-            </div>
+          <div className="absolute top-4 right-4 lg:top-6 lg:right-6">
+            <Card className="bg-black/20 border-gray-600 backdrop-blur-sm">
+              <CardContent className="p-4 text-center">
+                <p className="text-white text-sm mb-1">Prize Pool</p>
+                <p className="text-yellow-400 text-xl lg:text-2xl font-bold">{tournament.prize_pool}</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
 
         {/* Tournament Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in">
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8 animate-slide-up">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="lg:col-span-2">
               {/* Tournament Timer */}
               <TournamentTimer tournament={tournament} />
               
               <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="tournament-card-modern grid w-full grid-cols-3 sm:grid-cols-5 p-2 h-auto backdrop-blur-xl border border-white/10">
-                  <TabsTrigger value="overview" className="tournament-hologram transition-all duration-300 hover:scale-105 text-sm font-bold p-4 data-[state=active]:tournament-card-cyber">
-                    <span className="hidden sm:inline">📊 Overview</span>
-                    <span className="sm:hidden">📊 Info</span>
+                <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 bg-gray-800 p-1 h-auto">
+                  <TabsTrigger value="overview" className="transition-all duration-200 hover:scale-105 text-sm p-3">
+                    <span className="hidden sm:inline">Overview</span>
+                    <span className="sm:hidden">Info</span>
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="tournament-hologram transition-all duration-300 hover:scale-105 text-sm font-bold p-4 data-[state=active]:tournament-card-cyber">
-                    <span className="hidden sm:inline">🚀 Register</span>
-                    <span className="sm:hidden">🚀 Join</span>
+                  <TabsTrigger value="register" className="transition-all duration-200 hover:scale-105 text-sm p-3">
+                    <span className="hidden sm:inline">Register</span>
+                    <span className="sm:hidden">Join</span>
                   </TabsTrigger>
-                  <TabsTrigger value="rules" className="tournament-hologram transition-all duration-300 hover:scale-105 text-sm font-bold p-4 data-[state=active]:tournament-card-cyber">📋 Rules</TabsTrigger>
-                  <TabsTrigger value="schedule" className="tournament-hologram transition-all duration-300 hover:scale-105 text-sm font-bold p-4 data-[state=active]:tournament-card-cyber hidden sm:block">⏰ Schedule</TabsTrigger>
-                  <TabsTrigger value="prizes" className="tournament-hologram transition-all duration-300 hover:scale-105 text-sm font-bold p-4 data-[state=active]:tournament-card-cyber hidden sm:block">🏆 Prizes</TabsTrigger>
+                  <TabsTrigger value="rules" className="transition-all duration-200 hover:scale-105 text-sm p-3">Rules</TabsTrigger>
+                  <TabsTrigger value="schedule" className="transition-all duration-200 hover:scale-105 text-sm p-3 hidden sm:block">Schedule</TabsTrigger>
+                  <TabsTrigger value="prizes" className="transition-all duration-200 hover:scale-105 text-sm p-3 hidden sm:block">Prizes</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="register" className="mt-6">
                   <TournamentRegistrationComponent tournament={tournament} />
                 </TabsContent>
                 
-                <TabsContent value="overview" className="mt-8">
-                  <div className="space-y-8">
+                <TabsContent value="overview" className="mt-6">
+                  <div className="space-y-6">
                     {/* Hero Description */}
-                    <div className="tournament-card-modern p-8 overflow-hidden relative glow-pulse">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-cyan-500/5 to-pink-600/10" />
-                      <CardContent className="relative z-10 p-0">
-                        <div className="flex items-center mb-8">
-                          <div className="w-20 h-20 tournament-card-cyber rounded-2xl flex items-center justify-center mr-6 glow-pulse">
-                            <Gamepad className="w-10 h-10 text-white" />
+                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+                      <CardContent className="p-6">
+                        <div className="flex items-center mb-6">
+                          <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mr-4 shadow-xl">
+                            <Gamepad className="w-7 h-7 text-white" />
                           </div>
-                          <div>
-                            <h3 className="tournament-text-gradient text-4xl font-black mb-2">About the Tournament</h3>
-                            <p className="text-cyan-300 text-lg font-medium">🔥 Epic battles await you!</p>
-                          </div>
+                          <h3 className="text-2xl font-bold text-white">About the Tournament</h3>
                         </div>
-                        <p className="text-white text-xl leading-relaxed font-medium">
-                          {tournament.description || '🎮 Join the ultimate Free Fire tournament and compete against the best players from around the world! Show your skills, strategy, and teamwork to win the grand prize. 💪 Are you ready to dominate the battlefield? 🔥'}
+                        <p className="text-gray-300 text-lg leading-relaxed">
+                          {tournament.description || 'Join the ultimate Free Fire tournament and compete against the best players from around the world! Show your skills, strategy, and teamwork to win the grand prize.'}
                         </p>
                       </CardContent>
-                    </div>
+                    </Card>
 
                     {/* Tournament Details Grid */}
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <div className="tournament-card-cyber p-6 text-center tournament-hologram group glow-pulse">
-                        <div className="w-16 h-16 tournament-card-modern rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <Gamepad className="w-8 h-8 text-cyan-300" />
-                        </div>
-                        <h4 className="text-cyan-200 font-bold mb-3 text-lg uppercase tracking-wider">🎮 Format</h4>
-                        <p className="tournament-text-gradient font-black text-2xl">{tournament.format || 'Battle Royale'}</p>
-                      </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <Card className="bg-gray-800/50 border-gray-700 hover:border-purple-500/50 transition-all duration-300">
+                        <CardContent className="p-6 text-center">
+                          <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                            <Gamepad className="w-7 h-7 text-white" />
+                          </div>
+                          <h4 className="text-white font-bold mb-2 text-base uppercase tracking-wide">Format</h4>
+                          <p className="text-purple-400 font-bold text-xl">{tournament.format || 'Battle Royale'}</p>
+                        </CardContent>
+                      </Card>
                       
-                      <div className="tournament-card-cyber p-6 text-center tournament-hologram group glow-pulse">
-                        <div className="w-16 h-16 tournament-card-modern rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <Trophy className="w-8 h-8 text-yellow-300" />
-                        </div>
-                        <h4 className="text-yellow-200 font-bold mb-3 text-lg uppercase tracking-wider">💰 Entry Fee</h4>
-                        <p className="tournament-text-gradient font-black text-2xl">{tournament.entry_fee || '₹10'}</p>
-                      </div>
+                      <Card className="bg-gray-800/50 border-gray-700 hover:border-green-500/50 transition-all duration-300">
+                        <CardContent className="p-6 text-center">
+                          <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                            <Trophy className="w-7 h-7 text-white" />
+                          </div>
+                          <h4 className="text-white font-bold mb-2 text-base uppercase tracking-wide">Entry Fee</h4>
+                          <p className="text-green-400 font-bold text-xl">{tournament.entry_fee || '₹10'}</p>
+                        </CardContent>
+                      </Card>
 
-                      <div className="tournament-card-cyber p-6 text-center tournament-hologram group glow-pulse">
-                        <div className="w-16 h-16 tournament-card-modern rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <MapPin className="w-8 h-8 text-orange-300" />
-                        </div>
-                        <h4 className="text-orange-200 font-bold mb-3 text-lg uppercase tracking-wider">🌍 Region</h4>
-                        <p className="tournament-text-gradient font-black text-2xl">{tournament.region || 'Global'}</p>
-                      </div>
+                      <Card className="bg-gray-800/50 border-gray-700 hover:border-orange-500/50 transition-all duration-300">
+                        <CardContent className="p-6 text-center">
+                          <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                            <MapPin className="w-7 h-7 text-white" />
+                          </div>
+                          <h4 className="text-white font-bold mb-2 text-base uppercase tracking-wide">Region</h4>
+                          <p className="text-orange-400 font-bold text-xl">{tournament.region || 'Global'}</p>
+                        </CardContent>
+                      </Card>
 
-                      <div className="tournament-card-cyber p-6 text-center tournament-hologram group glow-pulse">
-                        <div className="w-16 h-16 tournament-card-modern rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <Users className="w-8 h-8 text-purple-300" />
-                        </div>
-                        <h4 className="text-purple-200 font-bold mb-3 text-lg uppercase tracking-wider">👑 Organizer</h4>
-                        <p className="tournament-text-gradient font-black text-2xl">{tournament.organizer || 'Battle Mitra'}</p>
-                      </div>
+                      <Card className="bg-gray-800/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300">
+                        <CardContent className="p-6 text-center">
+                          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                            <Users className="w-7 h-7 text-white" />
+                          </div>
+                          <h4 className="text-white font-bold mb-2 text-base uppercase tracking-wide">Organizer</h4>
+                          <p className="text-blue-400 font-bold text-xl">{tournament.organizer || 'Battle Mitra'}</p>
+                        </CardContent>
+                      </Card>
                     </div>
 
                     {/* Key Highlights */}
