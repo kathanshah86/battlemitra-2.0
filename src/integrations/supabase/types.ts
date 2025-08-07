@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
@@ -18,117 +18,75 @@ export type Database = {
         Row: {
           content: string
           created_at: string
-          created_by: string
           id: string
-          is_active: boolean
-          priority: string
+          is_active: boolean | null
+          priority: string | null
           title: string
+          type: string | null
           updated_at: string
         }
         Insert: {
           content: string
           created_at?: string
-          created_by: string
           id?: string
-          is_active?: boolean
-          priority?: string
+          is_active?: boolean | null
+          priority?: string | null
           title: string
+          type?: string | null
           updated_at?: string
         }
         Update: {
           content?: string
           created_at?: string
-          created_by?: string
           id?: string
-          is_active?: boolean
-          priority?: string
+          is_active?: boolean | null
+          priority?: string | null
           title?: string
+          type?: string | null
           updated_at?: string
         }
         Relationships: []
       }
-      live_match_admin: {
+      leaderboards: {
         Row: {
-          banner_url: string | null
+          avatar_url: string | null
           created_at: string
-          description: string | null
           id: string
-          is_active: boolean
-          title: string
+          kills: number | null
+          player_name: string
+          rank: number
+          score: number | null
           tournament_id: string | null
           updated_at: string
-          youtube_live_url: string | null
+          wins: number | null
         }
         Insert: {
-          banner_url?: string | null
+          avatar_url?: string | null
           created_at?: string
-          description?: string | null
           id?: string
-          is_active?: boolean
-          title: string
+          kills?: number | null
+          player_name: string
+          rank: number
+          score?: number | null
           tournament_id?: string | null
           updated_at?: string
-          youtube_live_url?: string | null
+          wins?: number | null
         }
         Update: {
-          banner_url?: string | null
+          avatar_url?: string | null
           created_at?: string
-          description?: string | null
           id?: string
-          is_active?: boolean
-          title?: string
+          kills?: number | null
+          player_name?: string
+          rank?: number
+          score?: number | null
           tournament_id?: string | null
           updated_at?: string
-          youtube_live_url?: string | null
-        }
-        Relationships: []
-      }
-      matches: {
-        Row: {
-          created_at: string | null
-          game: string
-          id: string
-          player1: string
-          player1_score: number
-          player2: string
-          player2_score: number
-          start_time: string
-          status: string
-          thumbnail: string | null
-          tournament_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          game: string
-          id?: string
-          player1: string
-          player1_score?: number
-          player2: string
-          player2_score?: number
-          start_time: string
-          status?: string
-          thumbnail?: string | null
-          tournament_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          game?: string
-          id?: string
-          player1?: string
-          player1_score?: number
-          player2?: string
-          player2_score?: number
-          start_time?: string
-          status?: string
-          thumbnail?: string | null
-          tournament_id?: string | null
-          updated_at?: string | null
+          wins?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "matches_tournament_id_fkey"
+            foreignKeyName: "leaderboards_tournament_id_fkey"
             columns: ["tournament_id"]
             isOneToOne: false
             referencedRelation: "tournaments"
@@ -136,176 +94,184 @@ export type Database = {
           },
         ]
       }
-      players: {
+      live_matches: {
         Row: {
-          avatar: string | null
-          country: string | null
-          created_at: string | null
-          earnings: number | null
+          created_at: string
+          duration: string | null
+          game: string
           id: string
-          losses: number
-          name: string
-          points: number
-          rank: number
-          team: string | null
-          tournaments_won: number | null
-          updated_at: string | null
-          win_rate: number | null
-          wins: number
+          phase: string | null
+          prize: string | null
+          score_1: number | null
+          score_2: number | null
+          status: string | null
+          stream_url: string | null
+          team_1: string | null
+          team_2: string | null
+          thumbnail_url: string | null
+          tournament_id: string | null
+          tournament_name: string
+          updated_at: string
+          viewers: number | null
         }
         Insert: {
-          avatar?: string | null
-          country?: string | null
-          created_at?: string | null
-          earnings?: number | null
+          created_at?: string
+          duration?: string | null
+          game: string
           id?: string
-          losses?: number
-          name: string
-          points?: number
-          rank: number
-          team?: string | null
-          tournaments_won?: number | null
-          updated_at?: string | null
-          win_rate?: number | null
-          wins?: number
+          phase?: string | null
+          prize?: string | null
+          score_1?: number | null
+          score_2?: number | null
+          status?: string | null
+          stream_url?: string | null
+          team_1?: string | null
+          team_2?: string | null
+          thumbnail_url?: string | null
+          tournament_id?: string | null
+          tournament_name: string
+          updated_at?: string
+          viewers?: number | null
         }
         Update: {
-          avatar?: string | null
-          country?: string | null
-          created_at?: string | null
-          earnings?: number | null
+          created_at?: string
+          duration?: string | null
+          game?: string
           id?: string
-          losses?: number
-          name?: string
-          points?: number
-          rank?: number
-          team?: string | null
-          tournaments_won?: number | null
-          updated_at?: string | null
-          win_rate?: number | null
-          wins?: number
+          phase?: string | null
+          prize?: string | null
+          score_1?: number | null
+          score_2?: number | null
+          status?: string | null
+          stream_url?: string | null
+          team_1?: string | null
+          team_2?: string | null
+          thumbnail_url?: string | null
+          tournament_id?: string | null
+          tournament_name?: string
+          updated_at?: string
+          viewers?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "live_matches_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
-          display_name: string | null
-          earnings: number | null
           email: string | null
+          first_name: string | null
           game_id: string | null
-          game_user_id: string | null
           id: string
-          name: string | null
+          last_name: string | null
           updated_at: string
           user_id: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
-          display_name?: string | null
-          earnings?: number | null
           email?: string | null
+          first_name?: string | null
           game_id?: string | null
-          game_user_id?: string | null
           id?: string
-          name?: string | null
+          last_name?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
-          display_name?: string | null
-          earnings?: number | null
           email?: string | null
+          first_name?: string | null
           game_id?: string | null
-          game_user_id?: string | null
           id?: string
-          name?: string | null
+          last_name?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
-      sponsors: {
+      tournament_participants: {
         Row: {
-          created_at: string
-          description: string | null
-          display_order: number | null
           id: string
-          is_active: boolean | null
-          logo: string | null
-          name: string
-          updated_at: string
-          website: string | null
+          joined_at: string
+          profile_id: string
+          status: string | null
+          tournament_id: string
+          user_id: string
         }
         Insert: {
-          created_at?: string
-          description?: string | null
-          display_order?: number | null
           id?: string
-          is_active?: boolean | null
-          logo?: string | null
-          name: string
-          updated_at?: string
-          website?: string | null
+          joined_at?: string
+          profile_id: string
+          status?: string | null
+          tournament_id: string
+          user_id: string
         }
         Update: {
-          created_at?: string
-          description?: string | null
-          display_order?: number | null
           id?: string
-          is_active?: boolean | null
-          logo?: string | null
-          name?: string
-          updated_at?: string
-          website?: string | null
+          joined_at?: string
+          profile_id?: string
+          status?: string | null
+          tournament_id?: string
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tournament_participants_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tournament_registrations: {
         Row: {
-          created_at: string
+          created_at: string | null
+          game_id: string
           id: string
-          is_team_captain: boolean | null
-          payment_amount: number | null
-          payment_status: string | null
-          player_game_id: string
           player_name: string
-          registration_date: string
-          team_id: string | null
+          status: string | null
           tournament_id: string
-          updated_at: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
+          game_id: string
           id?: string
-          is_team_captain?: boolean | null
-          payment_amount?: number | null
-          payment_status?: string | null
-          player_game_id: string
           player_name: string
-          registration_date?: string
-          team_id?: string | null
+          status?: string | null
           tournament_id: string
-          updated_at?: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
+          game_id?: string
           id?: string
-          is_team_captain?: boolean | null
-          payment_amount?: number | null
-          payment_status?: string | null
-          player_game_id?: string
           player_name?: string
-          registration_date?: string
-          team_id?: string | null
+          status?: string | null
           tournament_id?: string
-          updated_at?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -318,290 +284,101 @@ export type Database = {
           },
         ]
       }
-      tournament_rooms: {
+      tournament_winners: {
         Row: {
-          created_at: string
+          created_at: string | null
           id: string
-          room_id: string | null
-          room_password: string | null
+          player_name: string
+          position: number
+          prize_amount: string | null
           tournament_id: string
-          updated_at: string
+          user_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          room_id?: string | null
-          room_password?: string | null
+          player_name: string
+          position: number
+          prize_amount?: string | null
           tournament_id: string
-          updated_at?: string
+          user_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          room_id?: string | null
-          room_password?: string | null
+          player_name?: string
+          position?: number
+          prize_amount?: string | null
           tournament_id?: string
-          updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "tournament_rooms_tournament_id_fkey"
+            foreignKeyName: "tournament_winners_tournament_id_fkey"
             columns: ["tournament_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "tournaments"
             referencedColumns: ["id"]
           },
         ]
       }
-      tournament_teams: {
-        Row: {
-          created_at: string
-          current_members: number
-          id: string
-          is_full: boolean
-          max_members: number
-          team_captain_id: string
-          team_name: string
-          team_size: number
-          tournament_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          current_members?: number
-          id?: string
-          is_full?: boolean
-          max_members?: number
-          team_captain_id: string
-          team_name: string
-          team_size?: number
-          tournament_id: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          current_members?: number
-          id?: string
-          is_full?: boolean
-          max_members?: number
-          team_captain_id?: string
-          team_name?: string
-          team_size?: number
-          tournament_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       tournaments: {
         Row: {
-          banner: string | null
-          created_at: string | null
-          current_participants: number
+          created_at: string
+          current_participants: number | null
           description: string | null
-          end_date: string
-          end_time: string | null
-          entry_fee: string | null
-          format: string | null
+          end_date: string | null
           game: string
-          highlights: string[] | null
           id: string
-          image: string | null
-          max_participants: number
+          image_url: string | null
+          max_participants: number | null
           name: string
-          organizer: string | null
-          overview_content: Json | null
-          prize_pool: string
-          prizes: string | null
-          prizes_content: Json | null
-          region: string | null
-          registration_closes: string | null
-          registration_opens: string | null
+          prize_pool: string | null
+          registration_end_time: string | null
+          registration_start_time: string | null
           rules: string | null
           schedule: string | null
-          schedule_content: Json | null
-          start_date: string
-          start_time: string | null
-          status: string
-          team_size: string | null
-          timer_duration: number | null
-          timer_is_running: boolean | null
-          timer_start_time: string | null
-          updated_at: string | null
-          winners: string | null
+          start_date: string | null
+          status: string | null
+          updated_at: string
         }
         Insert: {
-          banner?: string | null
-          created_at?: string | null
-          current_participants?: number
+          created_at?: string
+          current_participants?: number | null
           description?: string | null
-          end_date: string
-          end_time?: string | null
-          entry_fee?: string | null
-          format?: string | null
+          end_date?: string | null
           game: string
-          highlights?: string[] | null
           id?: string
-          image?: string | null
-          max_participants?: number
+          image_url?: string | null
+          max_participants?: number | null
           name: string
-          organizer?: string | null
-          overview_content?: Json | null
-          prize_pool: string
-          prizes?: string | null
-          prizes_content?: Json | null
-          region?: string | null
-          registration_closes?: string | null
-          registration_opens?: string | null
+          prize_pool?: string | null
+          registration_end_time?: string | null
+          registration_start_time?: string | null
           rules?: string | null
           schedule?: string | null
-          schedule_content?: Json | null
-          start_date: string
-          start_time?: string | null
-          status?: string
-          team_size?: string | null
-          timer_duration?: number | null
-          timer_is_running?: boolean | null
-          timer_start_time?: string | null
-          updated_at?: string | null
-          winners?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string
         }
         Update: {
-          banner?: string | null
-          created_at?: string | null
-          current_participants?: number
+          created_at?: string
+          current_participants?: number | null
           description?: string | null
-          end_date?: string
-          end_time?: string | null
-          entry_fee?: string | null
-          format?: string | null
+          end_date?: string | null
           game?: string
-          highlights?: string[] | null
           id?: string
-          image?: string | null
-          max_participants?: number
+          image_url?: string | null
+          max_participants?: number | null
           name?: string
-          organizer?: string | null
-          overview_content?: Json | null
-          prize_pool?: string
-          prizes?: string | null
-          prizes_content?: Json | null
-          region?: string | null
-          registration_closes?: string | null
-          registration_opens?: string | null
+          prize_pool?: string | null
+          registration_end_time?: string | null
+          registration_start_time?: string | null
           rules?: string | null
           schedule?: string | null
-          schedule_content?: Json | null
-          start_date?: string
-          start_time?: string | null
-          status?: string
-          team_size?: string | null
-          timer_duration?: number | null
-          timer_is_running?: boolean | null
-          timer_start_time?: string | null
-          updated_at?: string | null
-          winners?: string | null
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          start_date?: string | null
+          status?: string | null
           updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      wallet_balances: {
-        Row: {
-          available_balance: number
-          created_at: string
-          id: string
-          pending_balance: number
-          total_deposited: number
-          total_withdrawn: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          available_balance?: number
-          created_at?: string
-          id?: string
-          pending_balance?: number
-          total_deposited?: number
-          total_withdrawn?: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          available_balance?: number
-          created_at?: string
-          id?: string
-          pending_balance?: number
-          total_deposited?: number
-          total_withdrawn?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      wallet_transactions: {
-        Row: {
-          admin_notes: string | null
-          amount: number
-          approved_at: string | null
-          approved_by: string | null
-          created_at: string
-          id: string
-          payment_method: string | null
-          status: string
-          transaction_reference: string | null
-          transaction_type: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          admin_notes?: string | null
-          amount: number
-          approved_at?: string | null
-          approved_by?: string | null
-          created_at?: string
-          id?: string
-          payment_method?: string | null
-          status?: string
-          transaction_reference?: string | null
-          transaction_type: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          admin_notes?: string | null
-          amount?: number
-          approved_at?: string | null
-          approved_by?: string | null
-          created_at?: string
-          id?: string
-          payment_method?: string | null
-          status?: string
-          transaction_reference?: string | null
-          transaction_type?: string
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
@@ -610,20 +387,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _user_id: string
-          _role: Database["public"]["Enums"]["app_role"]
-        }
-        Returns: boolean
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -750,8 +517,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const
