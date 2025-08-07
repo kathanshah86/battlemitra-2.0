@@ -94,6 +94,42 @@ export type Database = {
           },
         ]
       }
+      live_match_admin: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          title: string
+          tournament_id: string | null
+          updated_at: string
+          youtube_live_url: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+          tournament_id?: string | null
+          updated_at?: string
+          youtube_live_url?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+          tournament_id?: string | null
+          updated_at?: string
+          youtube_live_url?: string | null
+        }
+        Relationships: []
+      }
       live_matches: {
         Row: {
           created_at: string
@@ -166,11 +202,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          display_name: string | null
+          earnings: number | null
           email: string | null
           first_name: string | null
           game_id: string | null
           id: string
           last_name: string | null
+          name: string | null
           updated_at: string
           user_id: string
           username: string | null
@@ -178,11 +217,14 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
+          earnings?: number | null
           email?: string | null
           first_name?: string | null
           game_id?: string | null
           id?: string
           last_name?: string | null
+          name?: string | null
           updated_at?: string
           user_id: string
           username?: string | null
@@ -190,11 +232,14 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
+          earnings?: number | null
           email?: string | null
           first_name?: string | null
           game_id?: string | null
           id?: string
           last_name?: string | null
+          name?: string | null
           updated_at?: string
           user_id?: string
           username?: string | null
@@ -340,6 +385,9 @@ export type Database = {
           schedule: string | null
           start_date: string | null
           status: string | null
+          timer_duration: number | null
+          timer_is_running: boolean
+          timer_start_time: string | null
           updated_at: string
         }
         Insert: {
@@ -359,6 +407,9 @@ export type Database = {
           schedule?: string | null
           start_date?: string | null
           status?: string | null
+          timer_duration?: number | null
+          timer_is_running?: boolean
+          timer_start_time?: string | null
           updated_at?: string
         }
         Update: {
@@ -378,6 +429,9 @@ export type Database = {
           schedule?: string | null
           start_date?: string | null
           status?: string | null
+          timer_duration?: number | null
+          timer_is_running?: boolean
+          timer_start_time?: string | null
           updated_at?: string
         }
         Relationships: []
