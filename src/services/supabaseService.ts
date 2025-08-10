@@ -1,33 +1,48 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Tournament, Player, Match, OverviewContent, ScheduleContent, PrizesContent } from '@/types';
+import { Tournament, Player, Match } from '@/types';
 
 // Helper function to convert database row to Tournament
 const convertToTournament = (dbRow: any): Tournament => {
   return {
     ...dbRow,
-    overview_content: dbRow.overview_content ? (dbRow.overview_content as OverviewContent) : undefined,
-    schedule_content: dbRow.schedule_content ? (dbRow.schedule_content as ScheduleContent) : undefined,
-    prizes_content: dbRow.prizes_content ? (dbRow.prizes_content as PrizesContent) : undefined,
-  };
+    // Map DB fields to app fields
+    image: dbRow.image_url ?? '',
+    registration_opens: dbRow.registration_start_time ?? undefined,
+    registration_closes: dbRow.registration_end_time ?? undefined,
+  } as Tournament;
 };
 
 // Helper function to convert Tournament to database format
 const convertToDbFormat = (tournament: any) => {
-  const dbTournament = { ...tournament };
-  
-  // Convert content objects to JSON
-  if (dbTournament.overview_content) {
-    dbTournament.overview_content = JSON.stringify(dbTournament.overview_content);
-  }
-  if (dbTournament.schedule_content) {
-    dbTournament.schedule_content = JSON.stringify(dbTournament.schedule_content);
-  }
-  if (dbTournament.prizes_content) {
-    dbTournament.prizes_content = JSON.stringify(dbTournament.prizes_content);
-  }
-  
-  return dbTournament;
+  const db: any = {};
+
+  // Direct mappings
+  if (tournament.name !== undefined) db.name = tournament.name;
+  if (tournament.game !== undefined) db.game = tournament.game;
+  if (tournament.description !== undefined) db.description = tournament.description;
+  if (tournament.prize_pool !== undefined) db.prize_pool = tournament.prize_pool;
+  if (tournament.max_participants !== undefined) db.max_participants = tournament.max_participants;
+  if (tournament.current_participants !== undefined) db.current_participants = tournament.current_participants;
+  if (tournament.status !== undefined) db.status = tournament.status;
+  if (tournament.rules !== undefined) db.rules = tournament.rules;
+  if (tournament.schedule !== undefined) db.schedule = tournament.schedule;
+  if (tournament.timer_duration !== undefined) db.timer_duration = tournament.timer_duration;
+  if (tournament.timer_start_time !== undefined) db.timer_start_time = tournament.timer_start_time;
+  if (tournament.timer_is_running !== undefined) db.timer_is_running = tournament.timer_is_running;
+
+  // Date/time mappings (ensure ISO strings)
+  if (tournament.start_date) db.start_date = new Date(tournament.start_date).toISOString();
+  if (tournament.end_date) db.end_date = new Date(tournament.end_date).toISOString();
+
+  // Registration window mapping
+  if (tournament.registration_opens) db.registration_start_time = new Date(tournament.registration_opens).toISOString();
+  if (tournament.registration_closes) db.registration_end_time = new Date(tournament.registration_closes).toISOString();
+
+  // Image mapping
+  if (tournament.image !== undefined) db.image_url = tournament.image;
+
+  return db;
 };
 
 // Tournament operations

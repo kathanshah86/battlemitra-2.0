@@ -198,6 +198,110 @@ export type Database = {
           },
         ]
       }
+      matches: {
+        Row: {
+          created_at: string
+          game: string
+          id: string
+          player1: string
+          player1_score: number
+          player2: string
+          player2_score: number
+          start_time: string
+          status: string
+          thumbnail: string | null
+          tournament_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          game: string
+          id?: string
+          player1: string
+          player1_score?: number
+          player2: string
+          player2_score?: number
+          start_time?: string
+          status?: string
+          thumbnail?: string | null
+          tournament_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          game?: string
+          id?: string
+          player1?: string
+          player1_score?: number
+          player2?: string
+          player2_score?: number
+          start_time?: string
+          status?: string
+          thumbnail?: string | null
+          tournament_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          avatar: string | null
+          country: string | null
+          created_at: string
+          earnings: number
+          id: string
+          losses: number
+          name: string
+          points: number
+          rank: number
+          team: string | null
+          tournaments_won: number
+          updated_at: string
+          win_rate: number
+          wins: number
+        }
+        Insert: {
+          avatar?: string | null
+          country?: string | null
+          created_at?: string
+          earnings?: number
+          id?: string
+          losses?: number
+          name: string
+          points?: number
+          rank?: number
+          team?: string | null
+          tournaments_won?: number
+          updated_at?: string
+          win_rate?: number
+          wins?: number
+        }
+        Update: {
+          avatar?: string | null
+          country?: string | null
+          created_at?: string
+          earnings?: number
+          id?: string
+          losses?: number
+          name?: string
+          points?: number
+          rank?: number
+          team?: string | null
+          tournaments_won?: number
+          updated_at?: string
+          win_rate?: number
+          wins?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -243,6 +347,42 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      sponsors: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          logo: string | null
+          name: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo?: string | null
+          name: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo?: string | null
+          name?: string
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -324,6 +464,41 @@ export type Database = {
             foreignKeyName: "tournament_registrations_tournament_id_fkey"
             columns: ["tournament_id"]
             isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_rooms: {
+        Row: {
+          created_at: string
+          id: string
+          room_id: string | null
+          room_password: string | null
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          room_id?: string | null
+          room_password?: string | null
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          room_id?: string | null
+          room_password?: string | null
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_rooms_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: true
             referencedRelation: "tournaments"
             referencedColumns: ["id"]
           },

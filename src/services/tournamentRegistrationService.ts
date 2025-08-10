@@ -1,37 +1,40 @@
 import { supabase } from '@/integrations/supabase/client';
-import { TournamentTeam } from '@/types';
 
 export interface TournamentRegistration {
   id: string;
   user_id: string;
   tournament_id: string;
   player_name: string;
-  player_game_id: string;
-  registration_date: string;
-  payment_status: 'pending' | 'completed' | 'failed';
-  payment_amount: number;
-  team_id?: string;
-  is_team_captain?: boolean;
+  game_id: string;
+  status: string;
   created_at: string;
   updated_at: string;
+  // Optional legacy fields (for UI compatibility)
+  player_game_id?: string;
+  registration_date?: string;
+  payment_status?: 'pending' | 'completed' | 'failed';
+  payment_amount?: number;
+  team_id?: string;
+  is_team_captain?: boolean;
 }
 
 export interface TournamentRegistrationInput {
   tournament_id: string;
   player_name: string;
-  player_game_id: string;
+  game_id?: string;
+  player_game_id?: string;
   payment_amount?: number;
-  team_id?: string;
-  is_team_captain?: boolean;
 }
 
+// Optional legacy types for team flows
 export interface TeamRegistrationInput {
   tournament_id: string;
   team_name: string;
   team_size: number;
   player_name: string;
-  player_game_id: string;
+  game_id?: string;
   payment_amount?: number;
+  player_game_id?: string;
 }
 
 export interface TournamentRoom {
@@ -45,22 +48,31 @@ export interface TournamentRoom {
 
 export const tournamentRegistrationService = {
   async registerForTournament(registration: TournamentRegistrationInput): Promise<TournamentRegistration> {
-    // Get current user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
     const { data, error } = await supabase
       .from('tournament_registrations')
-      .insert([{
-        ...registration,
-        user_id: user.id,
-        payment_status: 'completed'
-      }])
+      .insert([
+        {
+          user_id: user.id,
+          tournament_id: registration.tournament_id,
+          player_name: registration.player_name,
+          game_id: registration.game_id ?? registration.player_game_id ?? '',
+        },
+      ])
       .select()
       .single();
 
     if (error) throw error;
-    return data as TournamentRegistration;
+    // Map for UI compatibility
+    return {
+      ...(data as any),
+      player_game_id: (data as any).game_id,
+      registration_date: (data as any).created_at,
+      payment_status: undefined,
+      payment_amount: undefined,
+    } as TournamentRegistration;
   },
 
   async getUserRegistrations(userId: string): Promise<TournamentRegistration[]> {
@@ -71,7 +83,11 @@ export const tournamentRegistrationService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return (data || []) as TournamentRegistration[];
+    return (data || []).map((row: any) => ({
+      ...row,
+      player_game_id: row.game_id,
+      registration_date: row.created_at,
+    })) as TournamentRegistration[];
   },
 
   async getTournamentRegistrations(tournamentId: string): Promise<TournamentRegistration[]> {
@@ -79,11 +95,14 @@ export const tournamentRegistrationService = {
       .from('tournament_registrations')
       .select('*')
       .eq('tournament_id', tournamentId)
-      .eq('payment_status', 'completed')
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return (data || []) as TournamentRegistration[];
+    return (data || []).map((row: any) => ({
+      ...row,
+      player_game_id: row.game_id,
+      registration_date: row.created_at,
+    })) as TournamentRegistration[];
   },
 
   async checkUserRegistration(userId: string, tournamentId: string): Promise<TournamentRegistration | null> {
@@ -95,13 +114,19 @@ export const tournamentRegistrationService = {
       .maybeSingle();
 
     if (error) throw error;
-    return data as TournamentRegistration | null;
+    return data
+      ? ({
+          ...(data as any),
+          player_game_id: (data as any).game_id,
+          registration_date: (data as any).created_at,
+        } as TournamentRegistration)
+      : null;
   },
 
-  async updatePaymentStatus(registrationId: string, status: 'completed' | 'failed'): Promise<void> {
+  async updateStatus(registrationId: string, status: string): Promise<void> {
     const { error } = await supabase
       .from('tournament_registrations')
-      .update({ payment_status: status })
+      .update({ status })
       .eq('id', registrationId);
 
     if (error) throw error;
@@ -118,15 +143,19 @@ export const tournamentRegistrationService = {
     return data as TournamentRoom | null;
   },
 
-  async upsertTournamentRoom(tournamentId: string, roomData: Partial<Pick<TournamentRoom, 'room_id' | 'room_password'>>): Promise<TournamentRoom> {
+  async upsertTournamentRoom(
+    tournamentId: string,
+    roomData: Partial<Pick<TournamentRoom, 'room_id' | 'room_password'>>
+  ): Promise<TournamentRoom> {
     const { data, error } = await supabase
       .from('tournament_rooms')
-      .upsert({
-        tournament_id: tournamentId,
-        ...roomData
-      }, {
-        onConflict: 'tournament_id'
-      })
+      .upsert(
+        {
+          tournament_id: tournamentId,
+          ...roomData,
+        },
+        { onConflict: 'tournament_id' }
+      )
       .select()
       .single();
 
@@ -134,89 +163,24 @@ export const tournamentRegistrationService = {
     return data as TournamentRoom;
   },
 
-  // Team-related functions
-  async createTeam(teamData: TeamRegistrationInput): Promise<{ team: TournamentTeam; registration: TournamentRegistration }> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('User not authenticated');
-
-    // Create team first
-    const { data: team, error: teamError } = await supabase
-      .from('tournament_teams')
-      .insert([{
-        tournament_id: teamData.tournament_id,
-        team_name: teamData.team_name,
-        team_captain_id: user.id,
-        team_size: teamData.team_size,
-        max_members: teamData.team_size
-      }])
-      .select()
-      .single();
-
-    if (teamError) throw teamError;
-
-    // Register captain to the team
-    const registration = await this.registerForTournament({
-      tournament_id: teamData.tournament_id,
-      player_name: teamData.player_name,
-      player_game_id: teamData.player_game_id,
-      payment_amount: teamData.payment_amount,
-      team_id: team.id,
-      is_team_captain: true
-    });
-
-    return { team: team as TournamentTeam, registration };
+  // Legacy team flows (stubs for compatibility)
+  async createTeam(_teamData: TeamRegistrationInput): Promise<{ team: any; registration: TournamentRegistration }> {
+    throw new Error('Team registration is not enabled.');
   },
 
-  async joinTeam(teamId: string, playerData: Omit<TournamentRegistrationInput, 'team_id' | 'is_team_captain'>): Promise<TournamentRegistration> {
-    // Check if team is full
-    const { data: team, error: teamError } = await supabase
-      .from('tournament_teams')
-      .select('*')
-      .eq('id', teamId)
-      .single();
-
-    if (teamError) throw teamError;
-    if (team.is_full) throw new Error('Team is already full');
-
-    return this.registerForTournament({
-      ...playerData,
-      team_id: teamId,
-      is_team_captain: false
-    });
+  async joinTeam(_teamId: string, _playerData: Omit<TournamentRegistrationInput, 'game_id'> & { game_id?: string }): Promise<TournamentRegistration> {
+    throw new Error('Team registration is not enabled.');
   },
 
-  async getTournamentTeams(tournamentId: string): Promise<TournamentTeam[]> {
-    const { data, error } = await supabase
-      .from('tournament_teams')
-      .select('*')
-      .eq('tournament_id', tournamentId)
-      .order('created_at', { ascending: true });
-
-    if (error) throw error;
-    return (data || []) as TournamentTeam[];
+  async getTournamentTeams(_tournamentId: string): Promise<any[]> {
+    return [];
   },
 
-  async getTeamMembers(teamId: string): Promise<TournamentRegistration[]> {
-    const { data, error } = await supabase
-      .from('tournament_registrations')
-      .select('*')
-      .eq('team_id', teamId)
-      .eq('payment_status', 'completed')
-      .order('is_team_captain', { ascending: false });
-
-    if (error) throw error;
-    return (data || []) as TournamentRegistration[];
+  async getTeamMembers(_teamId: string): Promise<TournamentRegistration[]> {
+    return [];
   },
 
-  async getAvailableTeams(tournamentId: string): Promise<TournamentTeam[]> {
-    const { data, error } = await supabase
-      .from('tournament_teams')
-      .select('*')
-      .eq('tournament_id', tournamentId)
-      .eq('is_full', false)
-      .order('created_at', { ascending: true });
-
-    if (error) throw error;
-    return (data || []) as TournamentTeam[];
-  }
+  async getAvailableTeams(_tournamentId: string): Promise<any[]> {
+    return [];
+  },
 };
