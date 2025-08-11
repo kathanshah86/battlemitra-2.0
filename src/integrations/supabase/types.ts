@@ -504,6 +504,85 @@ export type Database = {
           },
         ]
       }
+      tournament_team_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_teams: {
+        Row: {
+          captain_user_id: string
+          created_at: string
+          current_members: number
+          id: string
+          is_full: boolean
+          max_members: number
+          status: string
+          team_name: string
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          captain_user_id: string
+          created_at?: string
+          current_members?: number
+          id?: string
+          is_full?: boolean
+          max_members: number
+          status?: string
+          team_name: string
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          captain_user_id?: string
+          created_at?: string
+          current_members?: number
+          id?: string
+          is_full?: boolean
+          max_members?: number
+          status?: string
+          team_name?: string
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_teams_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tournament_winners: {
         Row: {
           created_at: string | null
@@ -544,6 +623,7 @@ export type Database = {
       }
       tournaments: {
         Row: {
+          banner_url: string | null
           created_at: string
           current_participants: number | null
           description: string | null
@@ -560,12 +640,15 @@ export type Database = {
           schedule: string | null
           start_date: string | null
           status: string | null
+          team_mode: string | null
+          team_size: number | null
           timer_duration: number | null
           timer_is_running: boolean
           timer_start_time: string | null
           updated_at: string
         }
         Insert: {
+          banner_url?: string | null
           created_at?: string
           current_participants?: number | null
           description?: string | null
@@ -582,12 +665,15 @@ export type Database = {
           schedule?: string | null
           start_date?: string | null
           status?: string | null
+          team_mode?: string | null
+          team_size?: number | null
           timer_duration?: number | null
           timer_is_running?: boolean
           timer_start_time?: string | null
           updated_at?: string
         }
         Update: {
+          banner_url?: string | null
           created_at?: string
           current_participants?: number | null
           description?: string | null
@@ -604,6 +690,8 @@ export type Database = {
           schedule?: string | null
           start_date?: string | null
           status?: string | null
+          team_mode?: string | null
+          team_size?: number | null
           timer_duration?: number | null
           timer_is_running?: boolean
           timer_start_time?: string | null

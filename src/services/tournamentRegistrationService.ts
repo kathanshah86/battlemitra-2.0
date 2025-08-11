@@ -163,24 +163,144 @@ export const tournamentRegistrationService = {
     return data as TournamentRoom;
   },
 
-  // Legacy team flows (stubs for compatibility)
-  async createTeam(_teamData: TeamRegistrationInput): Promise<{ team: any; registration: TournamentRegistration }> {
-    throw new Error('Team registration is not enabled.');
+  // Team flows using tournament_teams and tournament_team_members
+  async createTeam(teamData: TeamRegistrationInput): Promise<{ team: any; registration: TournamentRegistration }> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    // Create team (captain membership is auto-added by trigger)
+    const { data: team, error: teamErr } = await supabase
+      .from('tournament_teams')
+      .insert([
+        {
+          tournament_id: teamData.tournament_id,
+          captain_user_id: user.id,
+          team_name: teamData.team_name,
+          max_members: 1, // placeholder, will be set by trigger based on tournament.team_size
+        } as any,
+      ])
+      .select()
+      .single();
+
+    if (teamErr) throw teamErr;
+
+    // Create registration row for captain (for UI compatibility)
+    const { data: reg, error: regErr } = await supabase
+      .from('tournament_registrations')
+      .insert([
+        {
+          user_id: user.id,
+          tournament_id: teamData.tournament_id,
+          player_name: teamData.player_name,
+          game_id: teamData.game_id ?? teamData.player_game_id ?? '',
+          status: 'registered',
+        },
+      ])
+      .select()
+      .single();
+
+    if (regErr) throw regErr;
+
+    return {
+      team,
+      registration: {
+        ...(reg as any),
+        player_game_id: (reg as any).game_id,
+        registration_date: (reg as any).created_at,
+      } as TournamentRegistration,
+    };
   },
 
-  async joinTeam(_teamId: string, _playerData: Omit<TournamentRegistrationInput, 'game_id'> & { game_id?: string }): Promise<TournamentRegistration> {
-    throw new Error('Team registration is not enabled.');
+  async joinTeam(teamId: string, playerData: Omit<TournamentRegistrationInput, 'game_id'> & { game_id?: string }): Promise<TournamentRegistration> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    // Join team
+    const { error: joinErr } = await supabase
+      .from('tournament_team_members')
+      .insert([
+        { team_id: teamId, user_id: user.id, role: 'member' },
+      ]);
+    if (joinErr) throw joinErr;
+
+    // Ensure registration exists (idempotent)
+    const { data: existing } = await supabase
+      .from('tournament_registrations')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('tournament_id', playerData.tournament_id)
+      .maybeSingle();
+
+    if (!existing) {
+      const { data: reg, error: regErr } = await supabase
+        .from('tournament_registrations')
+        .insert([
+          {
+            user_id: user.id,
+            tournament_id: playerData.tournament_id,
+            player_name: playerData.player_name,
+            game_id: playerData.game_id ?? playerData.player_game_id ?? '',
+            status: 'registered',
+          },
+        ])
+        .select()
+        .single();
+      if (regErr) throw regErr;
+      return {
+        ...(reg as any),
+        player_game_id: (reg as any).game_id,
+        registration_date: (reg as any).created_at,
+      } as TournamentRegistration;
+    }
+
+    return {
+      ...(existing as any),
+      player_game_id: (existing as any).game_id,
+      registration_date: (existing as any).created_at,
+    } as TournamentRegistration;
   },
 
-  async getTournamentTeams(_tournamentId: string): Promise<any[]> {
-    return [];
+  async getTournamentTeams(tournamentId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('tournament_teams')
+      .select('*')
+      .eq('tournament_id', tournamentId)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
   },
 
-  async getTeamMembers(_teamId: string): Promise<TournamentRegistration[]> {
-    return [];
+  async getTeamMembers(teamId: string): Promise<TournamentRegistration[]> {
+    const { data, error } = await supabase
+      .from('tournament_team_members')
+      .select('*')
+      .eq('team_id', teamId)
+      .order('joined_at', { ascending: true });
+    if (error) throw error;
+    // Map to a simplified TournamentRegistration-like structure for compatibility
+    return (data || []).map((row: any) => ({
+      id: row.id,
+      user_id: row.user_id,
+      tournament_id: '',
+      player_name: '',
+      game_id: '',
+      status: 'registered',
+      created_at: row.joined_at,
+      updated_at: row.joined_at,
+      player_game_id: '',
+      registration_date: row.joined_at,
+    }));
   },
 
-  async getAvailableTeams(_tournamentId: string): Promise<any[]> {
-    return [];
+  async getAvailableTeams(tournamentId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('tournament_teams')
+      .select('*')
+      .eq('tournament_id', tournamentId)
+      .eq('status', 'open')
+      .eq('is_full', false)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
   },
 };

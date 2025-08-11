@@ -4,12 +4,18 @@ import { Tournament, Player, Match } from '@/types';
 
 // Helper function to convert database row to Tournament
 const convertToTournament = (dbRow: any): Tournament => {
+  // Derive team mode string
+  const derivedMode = dbRow?.team_mode
+    ?? (dbRow?.team_size === 2 ? 'duo' : dbRow?.team_size === 4 ? 'squad' : 'solo');
+
   return {
     ...dbRow,
     // Map DB fields to app fields
     image: dbRow.image_url ?? '',
+    banner: dbRow.banner_url ?? undefined,
     registration_opens: dbRow.registration_start_time ?? undefined,
     registration_closes: dbRow.registration_end_time ?? undefined,
+    team_size: derivedMode,
   } as Tournament;
 };
 
@@ -39,8 +45,20 @@ const convertToDbFormat = (tournament: any) => {
   if (tournament.registration_opens) db.registration_start_time = new Date(tournament.registration_opens).toISOString();
   if (tournament.registration_closes) db.registration_end_time = new Date(tournament.registration_closes).toISOString();
 
-  // Image mapping
+  // Image + banner mapping
   if (tournament.image !== undefined) db.image_url = tournament.image;
+  if (tournament.banner !== undefined) db.banner_url = tournament.banner;
+
+  // Team mode/size mapping
+  if (tournament.team_size !== undefined) {
+    if (typeof tournament.team_size === 'string') {
+      db.team_mode = tournament.team_size;
+      db.team_size = tournament.team_size === 'duo' ? 2 : tournament.team_size === 'squad' ? 4 : 1;
+    } else if (typeof tournament.team_size === 'number') {
+      db.team_size = tournament.team_size;
+      db.team_mode = tournament.team_size === 2 ? 'duo' : tournament.team_size === 4 ? 'squad' : 'solo';
+    }
+  }
 
   return db;
 };
